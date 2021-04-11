@@ -2,21 +2,28 @@
  * @Author: xuziyong
  * @Date: 2021-04-05 22:34:19
  * @LastEditors: xuziyong
- * @LastEditTime: 2021-04-10 02:52:14
+ * @LastEditTime: 2021-04-11 12:19:06
  * @Description: TODO
  */
 
 import { ProxyAboutOrigin, ProxyAboutOriginItem } from "../class/ProxyAbout";
-import { PROXY_STATIC_TYPE } from "./const";
+
+interface DataActUrlsStore {
+  details: Array<ProxyAboutOriginItem>;
+}
 
 /**
  * 活跃的接口
  */
-export const dataActUrls = [new ProxyAboutOriginItem("/act/url", PROXY_STATIC_TYPE.TYPES)];
+export const dataActUrlsStore: DataActUrlsStore = {
+  details: [new ProxyAboutOriginItem("/act/url")],
+};
 
-export const dataAct = () => new ProxyAboutOrigin(...dataActUrls);
-
-export const dataActProxyConfig = dataAct();
+/**
+ * 获取活跃地址
+ * @returns
+ */
+export const dataAct = () => new ProxyAboutOrigin(...dataActUrlsStore.details);
 
 /**
  * 判断当前接口是否是有效地址
@@ -24,17 +31,13 @@ export const dataActProxyConfig = dataAct();
  * @returns boolean
  */
 export const isActUrl = (path: string): boolean => {
-  return dataActProxyConfig.hasActUrl(path);
-};
-
-export const isStatic = (path: string): boolean => {
-  return dataActProxyConfig.isStatic(path);
+  return dataAct().hasActUrl(path);
 };
 
 export const isSameOrigin = (oriPath: string): boolean => {
   return isActUrl(oriPath);
 };
 
-export const getRealUrl = (path: string): string | null => {
-  return dataActProxyConfig.getRealUrl(path);
+export const getAct = (path: string): ProxyAboutOriginItem | null => {
+  return dataAct().getAct(path);
 };
